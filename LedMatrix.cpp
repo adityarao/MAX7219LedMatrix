@@ -9,6 +9,7 @@ LedMatrix::LedMatrix(byte numberOfDevices, byte slaveSelectPin) {
     myNumberOfDevices = numberOfDevices;
     mySlaveSelectPin = slaveSelectPin;
     cols = new byte[numberOfDevices * 8];
+    xcols = new byte[numberOfDevices * 8];
 }
 
 /**
@@ -21,6 +22,7 @@ void LedMatrix::init() {
     SPI.begin ();
     SPI.setDataMode(SPI_MODE0);
     SPI.setClockDivider(SPI_CLOCK_DIV128);
+    //SPI.setBitOrder(LSBFIRST);
     for(byte device = 0; device < myNumberOfDevices; device++) {
         sendByte (device, MAX7219_REG_SCANLIMIT, 7);   // show all 8 digits
         sendByte (device, MAX7219_REG_DECODEMODE, 0);  // using an led matrix (not digits)
@@ -41,6 +43,7 @@ void LedMatrix::sendByte (const byte device, const byte reg, const byte data) {
     // put our device data into the array
     spiregister[offset] = reg;
     spidata[offset] = data;
+
     // enable the line
     digitalWrite(mySlaveSelectPin,LOW);
     // now shift out the data
@@ -97,8 +100,34 @@ void LedMatrix::clear() {
 }
 
 void LedMatrix::commit() {
-    for (byte col = 0; col < myNumberOfDevices * 8; col++) {
-        sendByte(col / 8, col % 8 + 1, cols[col]);
+    byte index = B0000001;
+    byte col; 
+
+    if(deviceOrientation == HORIZONTAL) {
+        for (col = 0; col < myNumberOfDevices * 8; col++) {
+            sendByte(col / 8, col % 8 + 1, cols[col]); 
+        }
+    } else if(deviceOrientation == VERTICAL){ // orient the device vertically
+        for (col = 0; col < myNumberOfDevices * 8; col++) {
+            xcols[col] = 0; 
+        }
+        // little inefficient, can be enhanced, rotate the matrix !
+        for (col = 0; col < myNumberOfDevices * 8; col++) {
+
+            /*for(byte bits = 0; bits < 8; bits++) 
+              xcols[col] |= ((cols[bits + 8*(col/8)] & (index << (col%8))) ?
+                                     B10000000 >> bits : 0);  
+            */
+            xcols[col] = xcols[col] | ((cols[0 + 8*(col/8)] & (index << (col%8))) ? B10000000 : 0);
+            xcols[col] = xcols[col] | ((cols[1 + 8*(col/8)] & (index << (col%8))) ? B01000000 : 0);
+            xcols[col] = xcols[col] | ((cols[2 + 8*(col/8)] & (index << (col%8))) ? B00100000 : 0);
+            xcols[col] = xcols[col] | ((cols[3 + 8*(col/8)] & (index << (col%8))) ? B00010000 : 0);
+            xcols[col] = xcols[col] | ((cols[4 + 8*(col/8)] & (index << (col%8))) ? B00001000 : 0);
+            xcols[col] = xcols[col] | ((cols[5 + 8*(col/8)] & (index << (col%8))) ? B00000100 : 0);
+            xcols[col] = xcols[col] | ((cols[6 + 8*(col/8)] & (index << (col%8))) ? B00000010 : 0);
+            xcols[col] = xcols[col] | ((cols[7 + 8*(col/8)] & (index << (col%8))) ? B00000001 : 0);
+            sendByte(col / 8, col % 8 + 1, xcols[col]);
+        }
     }
 }
 
@@ -164,3 +193,9 @@ void LedMatrix::setColumn(int column, byte value) {
 void LedMatrix::setPixel(byte x, byte y) {
     bitWrite(cols[x], y, true);
 }
+
+// Support for 1x4 8x8 modules
+void LedMatrix::setDeviceOrientation(byte value) {
+    deviceOrientation = value;
+}
+

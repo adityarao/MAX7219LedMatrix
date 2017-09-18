@@ -21,6 +21,11 @@
 #define TEXT_ALIGN_RIGHT         2 // End of text is aligned to the right of the display
 #define TEXT_ALIGN_RIGHT_END     3 // End of text is just outside the left side of the display
 
+// support for 1x4 devices, use VERTICAL in setDeviceOrientation(); 
+// added by @adityarao
+#define VERTICAL 1
+#define HORIZONTAL 2
+
 class LedMatrix {
     
 public:
@@ -116,9 +121,17 @@ public:
      * Oscilate the text between the two limits.
      */
     void oscillateText();
+
+    /**
+     * Sets the device orientation to appropriate value
+     * Set it to VERTICAL if using devices daisy chained in verticle positions
+     * examples of such devices include 1x4 8x8 module
+     */ 
+    void setDeviceOrientation(byte value);
     
 private:
     byte* cols;
+    byte* xcols;    
     byte spiregister[8];
     byte spidata[8];
     String myText;
@@ -130,6 +143,10 @@ private:
     byte mySlaveSelectPin = 0;
     byte myCharWidth = 7;
     byte myTextAlignment = 1;
+
+    byte deviceOrientation = HORIZONTAL;
     
     void calculateTextAlignmentOffset();
+    void printBits(byte myByte);
+
 };
