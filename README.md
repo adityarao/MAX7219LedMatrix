@@ -13,8 +13,7 @@ Currently this library supports the following operations:
 - write text with a simple font
 - scroll text left or right 
 - oscillate text between the two ends
-** ADDED ** (by adityarao)
-- added support for 1x4 block module which has 4 8x8 LED matrixs soldered verticially 
+- (new) added support for 1x4 block module which has 4 8x8 LED matrixs soldered verticially 
   
 You're welcome to [read in my blog](http://blog.squix.ch/2015/04/esp8266arduino-max7219-8x8-led-matrix.html) how this library came about.
 
@@ -44,7 +43,7 @@ void loop() {
 }
 ```
 
-## Example 
+## Example 2
 
 ```
 // code with vertical display for 1x4 module support - added by @adityarao
