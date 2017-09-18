@@ -46,7 +46,8 @@ void loop() {
 
 ## Example 
 
-
+```
+// code with vertical display for 1x4 module support - added by @adityarao
 #include <SPI.h>
 #include "LedMatrix.h"
 
@@ -72,7 +73,7 @@ void loop() {
   ledMatrix.commit();
   delay(5);
 }
-
+```
 
 ## Installing library in Arduino IDE
 - open Arduino IDE
