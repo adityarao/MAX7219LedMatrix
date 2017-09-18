@@ -114,18 +114,9 @@ void LedMatrix::commit() {
         // little inefficient, can be enhanced, rotate the matrix !
         for (col = 0; col < myNumberOfDevices * 8; col++) {
 
-            /*for(byte bits = 0; bits < 8; bits++) 
+            for(byte bits = 0; bits < 8; bits++) 
               xcols[col] |= ((cols[bits + 8*(col/8)] & (index << (col%8))) ?
-                                     B10000000 >> bits : 0);  
-            */
-            xcols[col] = xcols[col] | ((cols[0 + 8*(col/8)] & (index << (col%8))) ? B10000000 : 0);
-            xcols[col] = xcols[col] | ((cols[1 + 8*(col/8)] & (index << (col%8))) ? B01000000 : 0);
-            xcols[col] = xcols[col] | ((cols[2 + 8*(col/8)] & (index << (col%8))) ? B00100000 : 0);
-            xcols[col] = xcols[col] | ((cols[3 + 8*(col/8)] & (index << (col%8))) ? B00010000 : 0);
-            xcols[col] = xcols[col] | ((cols[4 + 8*(col/8)] & (index << (col%8))) ? B00001000 : 0);
-            xcols[col] = xcols[col] | ((cols[5 + 8*(col/8)] & (index << (col%8))) ? B00000100 : 0);
-            xcols[col] = xcols[col] | ((cols[6 + 8*(col/8)] & (index << (col%8))) ? B00000010 : 0);
-            xcols[col] = xcols[col] | ((cols[7 + 8*(col/8)] & (index << (col%8))) ? B00000001 : 0);
+                                     (B10000000 >> bits) : 0);  
             sendByte(col / 8, col % 8 + 1, xcols[col]);
         }
     }
