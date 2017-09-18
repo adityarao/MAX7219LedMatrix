@@ -44,7 +44,8 @@ void loop() {
 }
 ```
 
-## Example for 1x4 module 
+## Example 
+
 
 #include <SPI.h>
 #include "LedMatrix.h"
