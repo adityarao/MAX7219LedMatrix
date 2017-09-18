@@ -13,6 +13,8 @@ Currently this library supports the following operations:
 - write text with a simple font
 - scroll text left or right 
 - oscillate text between the two ends
+** ADDED ** (by adityarao)
+- added support for 1x4 block module which has 4 8x8 LED matrixs soldered verticially 
   
 You're welcome to [read in my blog](http://blog.squix.ch/2015/04/esp8266arduino-max7219-8x8-led-matrix.html) how this library came about.
 
@@ -41,6 +43,36 @@ void loop() {
   delay(200);
 }
 ```
+
+## Example for 1x4 module 
+
+#include <SPI.h>
+#include "LedMatrix.h"
+
+
+#define NUMBER_OF_DEVICES 4
+#define CS_PIN D4
+LedMatrix ledMatrix = LedMatrix(NUMBER_OF_DEVICES, CS_PIN);
+int x = 0;
+  
+void setup() {
+  Serial.begin(115200);
+  ledMatrix.init();
+  ledMatrix.setDeviceOrientation(VERTICAL); // Set the orientation !!
+  ledMatrix.setText("Welcome to vertical display ! 10 20 30 40 50 60 70 80 90 100 ! 12:34 PM");
+}
+
+void loop() {
+
+  ledMatrix.clear();
+  ledMatrix.scrollTextLeft();
+  ledMatrix.drawText();
+
+  ledMatrix.commit();
+  delay(5);
+}
+
+
 ## Installing library in Arduino IDE
 - open Arduino IDE
 - open preferences and take note of the 'Sketchbook location' path
